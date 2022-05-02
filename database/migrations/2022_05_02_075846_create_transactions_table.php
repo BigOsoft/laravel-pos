@@ -16,8 +16,8 @@ return new class extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
             $table->integer('pos_id');
-            $table->integer('order');
-            $table->integer('ref_number');
+            $table->bigInteger('order')->change();
+            $table->bigInteger('ref_number')->change();
             $table->integer('discount');
             $table->string('customer');
             $table->string('status');
@@ -29,7 +29,7 @@ return new class extends Migration
             $table->string('payment_info');
             $table->string('payment_type');
             $table->string('user');
-            $table->integer('user_id');
+            $table->String('user_id')->change();
             $table->integer('paid');
             $table->integer('change');
             $table->integer('total');
