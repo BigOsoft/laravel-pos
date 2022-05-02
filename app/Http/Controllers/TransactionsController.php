@@ -36,7 +36,7 @@ class TransactionsController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [ //inputs are not empty or null
-            'posID' => 'required',
+            'pos_id' => 'required',
             'order' => 'required',
             'date' => 'required',
             'user' => 'required',
@@ -98,7 +98,7 @@ class TransactionsController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [ // the new values should not be null
-            'posID' => 'required',
+            'pos_id' => 'required',
             'order' => 'required',
             'date' => 'requiredd',
             'user' => 'required',
