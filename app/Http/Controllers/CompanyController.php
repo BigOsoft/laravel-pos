@@ -41,7 +41,7 @@ class CompanyController extends Controller
         ]);
   
         $company = new Company;
-        $company->title = $request->input('name'); //retrieving user inputs
+        $company->name = $request->input('name'); //retrieving user inputs
         $company->description = $request->input('description');  //retrieving user inputs
         $company->save(); //storing values as an object
         return $company; //returns the stored value if the operation was successful.  
@@ -84,7 +84,7 @@ class CompanyController extends Controller
         ]);
   
         $company = Company::findorFail($id); // uses the id to search values that need to be updated.
-        $company->title = $request->input('title'); //retrieves user input
+        $company->name = $request->input('name'); //retrieves user input
         $company->description = $request->input('description');////retrieves user input
         $company->save();//saves the values in the database. The existing data is overwritten.
         return $company; // retrieves the updated object from the database  
