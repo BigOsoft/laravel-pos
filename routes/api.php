@@ -25,10 +25,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::resources([
-    'companies', CompanyController::class,
-    'access', AccessController::class,
-    'inventory', InventoryController::class,
-    'permissions', PermissionsController::class,
-    'pos', POSController::class,
-    'transaactions', TransactionsController::class,
+    'company' => CompanyController::class,
+    'access' => AccessController::class,
+    'inventory' => InventoryController::class,
+    'permissions' => PermissionsController::class,
+    'pos' => POSController::class,
+    'transaactions' => TransactionsController::class,
 ]);
+// Route::resource('companies', CompanyController::class);
+// Route::resource('transactions', TransactionsController::class);

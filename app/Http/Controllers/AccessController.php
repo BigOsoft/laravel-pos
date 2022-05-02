@@ -22,17 +22,17 @@ class AccessController extends Controller
 
     public function company()
     {
-        return $this->belongsTo(Company::class)
+        return $this->belongsTo(Company::class);
     }
 
     public function user()
     {
-        return $this->belongsTo(User::class)
+        return $this->belongsTo(User::class);
     }
 
     public function permissions()
     {
-        return $this->belongsTo(Permissions::class)
+        return $this->belongsTo(Permissions::class);
     }
 
     /**
