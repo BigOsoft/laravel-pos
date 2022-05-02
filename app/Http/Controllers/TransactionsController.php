@@ -43,7 +43,7 @@ class TransactionsController extends Controller
         ]);
   
         $transactions = new Transactions;
-        $transactions->name = $request->input('pos_id'); 
+        $transactions->pos_id = $request->input('pos_id'); 
         $transactions->order = $request->input('order'); 
         $transactions->ref_number = $request->input('ref_number'); 
         $transactions->discount = $request->input('discount'); 
@@ -105,7 +105,7 @@ class TransactionsController extends Controller
         ]);
   
         $transactions = Transactions::findorFail($id); // uses the id to search values that need to be updated.
-        $transactions->name = $request->input('pos_id'); 
+        $transactions->pos_id = $request->input('pos_id'); 
         $transactions->order = $request->input('order'); 
         $transactions->ref_number = $request->input('ref_number'); 
         $transactions->discount = $request->input('discount'); 
