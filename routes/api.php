@@ -30,7 +30,7 @@ Route::resources([
     'inventory' => InventoryController::class,
     'permissions' => PermissionsController::class,
     'pos' => POSController::class,
-    'transaactions' => TransactionsController::class,
+    'transactions' => TransactionsController::class,
 ]);
 // Route::resource('companies', CompanyController::class);
 // Route::resource('transactions', TransactionsController::class);
