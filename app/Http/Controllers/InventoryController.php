@@ -53,11 +53,13 @@ class InventoryController extends Controller
         $inventory->SKU = $request->input('SKU');
         $inventory->name = $request->input('name');
         $inventory->price = $request->input('price');
+        $inventory->cost_price = $request->input('cost_price');
         $inventory->tax = $request->input('tax');
         $inventory->category = $request->input('category');
         $inventory->vendor = $request->input('vendor');
         $inventory->quantity = $request->input('quantity');
         $inventory->stock = $request->input('stock');
+        $inventory->min_stock_allowed = $request->input('min_stock_allowed');
         $inventory->save(); //storing values as an object
         return $inventory; //returns the stored value if the operation was successful.  
     }
