@@ -38,7 +38,7 @@ class TransactionsController extends Controller
         $this->validate($request, [ //inputs are not empty or null
             'posID' => 'required',
             'order' => 'required',
-            'date' => 'requiredd',
+            'date' => 'required',
             'user' => 'required',
         ]);
   
