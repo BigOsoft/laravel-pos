@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('address_two');
             $table->bigInteger('tax');
             $table->integer('percentage');
-            $table->bool('charge_tax');
+            $table->boolean('charge_tax');
             $table->timestamps();
         });
     }
