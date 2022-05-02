@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Access;
 use App\Models\User; 
-use App\Models\Permissions; 
+use App\Models\permission; 
 use App\Models\Company; 
 
 class AccessController extends Controller
@@ -30,9 +30,9 @@ class AccessController extends Controller
         return $this->belongsTo(User::class);
     }
 
-    public function permissions()
+    public function permission()
     {
-        return $this->belongsTo(Permissions::class);
+        return $this->belongsTo(permission::class);
     }
 
     /**
@@ -61,7 +61,7 @@ class AccessController extends Controller
   
         $access = new Access;
         $access->user_id = $request->input('user_id');
-        $access->permissions = $request->input('permissions');
+        $access->permission = $request->input('permission');
         $access->company = $request->input('company');
         $access->save(); //storing values as an object
         return $access; //returns the stored value if the operation was successful.  
@@ -106,7 +106,7 @@ class AccessController extends Controller
   
         $company = Company::findorFail($id); // uses the id to search values that need to be updated.
         $access->user_id = $request->input('user_id');
-        $access->permissions = $request->input('permissions');
+        $access->permission = $request->input('permission');
         $access->company = $request->input('company');
         $company->save();//saves the values in the database. The existing data is overwritten.
         return $company; // retrieves the updated object from the database  
