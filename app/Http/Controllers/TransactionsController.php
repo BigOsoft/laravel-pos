@@ -61,7 +61,7 @@ class TransactionsController extends Controller
         $transactions->paid = $request->input('paid'); 
         $transactions->change = $request->input('change'); 
         $transactions->total = $request->input('total'); 
-        $transactions->name = $request->input('_rev'); 
+        $transactions->_rev = $request->input('_rev'); 
         $transactions->save(); //storing values as an object
         return $transactions; //returns the stored value if the operation was successful.  
     }
@@ -123,7 +123,7 @@ class TransactionsController extends Controller
         $transactions->paid = $request->input('paid'); 
         $transactions->change = $request->input('change'); 
         $transactions->total = $request->input('total'); 
-        $transactions->name = $request->input('_rev'); 
+        $transactions->_rev = $request->input('_rev'); 
         $transactions->save();//saves the values in the database. The existing data is overwritten.
         return $transactions; // retrieves the updated object from the database  
     }
