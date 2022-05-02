@@ -3,6 +3,11 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\AccessController;
+use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\PermissionsController;
+use App\Http\Controllers\POSController;
+use App\Http\Controllers\TransactionsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,4 +24,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::resource('companies', CompanyController::class);
+Route::resources([
+    'companies', CompanyController::class,
+    'access', AccessController::class,
+    'inventory', InventoryController::class,
+    'permissions', PermissionsController::class,
+    'pos', POSController::class,
+    'transaactions', TransactionsController::class,
+]);
