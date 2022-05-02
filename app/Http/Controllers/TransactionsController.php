@@ -42,7 +42,7 @@ class TransactionsController extends Controller
             'user' => 'required',
         ]);
   
-        $transactions = new Company;
+        $transactions = new Transactions;
         $transactions->name = $request->input('pos_id'); 
         $transactions->order = $request->input('order'); 
         $transactions->ref_number = $request->input('ref_number'); 
@@ -63,7 +63,7 @@ class TransactionsController extends Controller
         $transactions->total = $request->input('total'); 
         $transactions->name = $request->input('_rev'); 
         $transactions->save(); //storing values as an object
-        return $company; //returns the stored value if the operation was successful.  
+        return $transactions; //returns the stored value if the operation was successful.  
     }
 
     /**
@@ -74,7 +74,7 @@ class TransactionsController extends Controller
      */
     public function show($id)
     {
-        return Company::findorFail($id); //searches for the object in the database using its id and returns it.
+        return Transactions::findorFail($id); //searches for the object in the database using its id and returns it.
     }
 
     /**

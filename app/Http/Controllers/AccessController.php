@@ -104,12 +104,12 @@ class AccessController extends Controller
             'company' => 'required',
         ]);
   
-        $company = Company::findorFail($id); // uses the id to search values that need to be updated.
+        $access = Access::findorFail($id); // uses the id to search values that need to be updated.
         $access->user_id = $request->input('user_id');
         $access->permission = $request->input('permission');
         $access->company = $request->input('company');
-        $company->save();//saves the values in the database. The existing data is overwritten.
-        return $company; // retrieves the updated object from the database  
+        $access->save();//saves the values in the database. The existing data is overwritten.
+        return $access; // retrieves the updated object from the database  
     }
 
     /**
