@@ -21,7 +21,7 @@ Route::get('/', function () {
 
 Route::get('/dashboard', function () {
     $poss = POS::all();
-    return view('dashboard', ['poss' => $pos]);
+    return view('dashboard', ['poss' => $poss]);
 })->middleware(['auth'])->name('dashboard');
 
 Route::get('/users', function () {
