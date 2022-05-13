@@ -20,12 +20,12 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    $poss = POS::all();
+    return view('dashboard', ['poss' => $pos]);
 })->middleware(['auth'])->name('dashboard');
 
 Route::get('/users', function () {
-    $pos = POS::all();
-    return view('users', ['pos' => $pos]);
+    return view('users');
 })->middleware(['auth'])->name('users');
 
 require __DIR__.'/auth.php';
