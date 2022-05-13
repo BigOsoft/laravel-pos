@@ -19,7 +19,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
+Route::match(array('GET', 'POST'), '/dashboard', function() {
     $poss = POS::all();
     return view('dashboard', ['poss' => $poss]);
 })->middleware(['auth'])->name('dashboard');
