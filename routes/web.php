@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Models\POS; 
+
 
 /*
 |--------------------------------------------------------------------------
@@ -22,7 +24,8 @@ Route::get('/dashboard', function () {
 })->middleware(['auth'])->name('dashboard');
 
 Route::get('/users', function () {
-    return view('users');
+    $pos = POS::all();
+    return view('users', ['pos' => $pos]);
 })->middleware(['auth'])->name('users');
 
 require __DIR__.'/auth.php';
