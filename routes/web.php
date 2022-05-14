@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Models\POS; 
+use App\Models\Transactions;
 
 
 /*
@@ -23,6 +24,11 @@ Route::match(array('GET', 'POST'), '/dashboard', function() {
     $poss = POS::all();
     return view('dashboard', ['poss' => $poss]);
 })->middleware(['auth'])->name('dashboard');
+
+Route::match(array('GET', 'POST'), '/report', function() {
+    $transactions = Transactions::all();
+    return view('report', ['transactions' => $transactions]);
+})->middleware(['auth'])->name('report');
 
 Route::get('/users', function () {
     return view('users');
