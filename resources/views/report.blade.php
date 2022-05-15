@@ -15,8 +15,6 @@
     <link href="assets/css/pages.css" rel="stylesheet" type="text/css" />
     <link href="assets/css/pagination.css" rel="stylesheet" type="text/css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="assets/js/pos.js"></script>
-    <script src="assets/js/product-filter.js"></script>
     </head>
   <body>
     @php
@@ -153,6 +151,7 @@
     <script src="assets/plugins/dataTables/vfs_fonts.js"></script>
     <script src="assets/js/pagination.js"></script>
     <script src="assets/js/listeners/index.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- <script src="assets/plugins/jquery-ui/jquery-ui.min.js"></script>
     <script src="assets/plugins/jq-keyboard/jqkeyboard-min.js"></script>
     <script src="assets/plugins/jq-keyboard/jqk.layout.en.js"></script>
@@ -160,25 +159,229 @@
 
     
     <script>
+        let allUsers = [];
+        let allProducts = [];
+        let allCategories = [];
+        let allVendors = [];
+        let sold = [];
+        let state = [];
+        let sold_items = [];
+        let allTransactions = [];
+        let platform;
+        let user = {};
+        let start = moment().startOf("month");
+        let end = moment();
+        let start_date = moment(start).toDate();
+        let end_date = moment(end).toDate();
+        let by_till = 0;
+        let by_user = 0;
+        let by_status = 1;
+        let curr_symbol = "Rs. ";
+        let Swal;
 
-    // $(function () {
-    //  "use strict";
-    //     jqKeyboard.init({
-    //         icon: "light"
-    //       });
-    //  });
- 
+        function loadSoldProducts() {
+            sold.sort(discend);
 
-    //  $('.holdOrderKeyboard').onscreenKeyboard({
-	//     allowTypingClass: 'holdOrderInput'
-    //   });
+            let counter = 0;
+            let sold_list = "";
+            let items = 0;
+            let products = 0;
+            $("#product_sales").empty();
+
+            sold.forEach((item, index) => {
+                items += item.qty;
+                products++;
+
+                let product = allProducts.filter(function (selected) {
+                return selected._id == item.id;
+                });
+                // console.log(item);
+                // console.log(product[0] == undefined ? "undefined" : "defined");
+                counter++;
+                if (product[0] != undefined) {
+                sold_list += `<tr>
+                            <td>${item.product}</td>
+                            <td>${item.qty}</td>
+                            <td>${product[0].stock == 1
+                    ? product.length > 0
+                        ? product[0].quantity
+                        : ""
+                    : "N/A"
+                    }</td>
+                            <td>${settings.symbol + (item.qty * parseFloat(item.price)).toFixed(2)}</td>
+                    <td>${settings.symbol + (item.qty * (parseFloat(item.price) - parseFloat(item.costPrice))).toFixed(2)}</td>
+                            </tr>`;
+                }
+
+                if (counter == sold.length) {
+                $("#total_items #counter").text(items);
+                $("#total_products #counter").text(products);
+                $("#product_sales").empty();
+                $("#productsSold").DataTable().destroy();
+                $("#product_sales").html(sold_list);
+                $("#productsSold").DataTable({
+                    order: [[0, "asc"]],
+                    autoWidth: false,
+                    info: true,
+                    JQueryUI: true,
+                    ordering: true,
+                    paging: true,
+                    dom: "Bfrtip",
+                    buttons: ["csv", "excel", "pdf"],
+                });
+                }
+            });
+        }
 
 
-    //   $('.customerOrderKeyboard').onscreenKeyboard({
-	//     allowTypingClass: 'holdCustomerOrderInput'
-    //   });
+        function loadTransactions() {
+            let tills = [];
+            let users = [];
+            let sales = 0;
+            let costs = 0;
+            let transact = 0;
+            let unique = 0;
 
-     </script>
+            sold_items = [];
+            sold = [];
+
+            let counter = 0;
+            let transaction_list = "";
+            let query = `by-date?start=${start_date}&end=${end_date}&user=${by_user}&status=${by_status}&till=${by_till}`;
+
+            $.get('https://pos.seatqr.co/public/api/transactions' + query, function (transactions) {
+                $("#transaction_list").empty();
+                $("#product_sales").empty();
+                if (transactions.length > 0) {
+                $("#transaction_list").empty();
+                $("#transactionList").DataTable().destroy();
+                allTransactions = transactions;
+
+                _.forEach(transactions, (trans, index) => {
+                    const tempTrans = new TransactionModel(trans);
+
+                    sales += parseFloat(trans.total);
+                    transact++;
+                    _.forEach(tempTrans.items, (item) => { sold_items.push(item); costs += (parseFloat(item.costPrice) * parseFloat(item.quantity)); });
+
+                    // if (!tills.includes(trans.till)) {
+                    // 	tills.push(trans.till);
+                    // }
+
+                    if (!users.includes(trans.user_id)) {
+                    users.push(trans.user_id);
+                    }
+                    // console.log(user.perm_users)
+                    counter++;
+                    transaction_list += `<tr>
+                                            <td>${trans.order}</td>
+                                            <td class="nobr">${moment(trans.date).format(
+                    "YYYY MMM DD hh:mm:ss"
+                    )}</td>
+                                            <td>${curr_symbol + trans.total}</td>
+                                            <td>${trans.paid == ""
+                        ? ""
+                        : curr_symbol + trans.paid
+                    }</td>
+                                            <td>${trans.change
+                        ? curr_symbol +
+                        Math.abs(trans.change).toFixed(2)
+                        : ""
+                    }</td>
+                                            <td>${trans.paid == ""
+                        ? ""
+                        : // : trans.payment_type == 0
+                        // ? "Cash"
+                        // : "Card"
+                        trans.payment_type
+                    }</td>
+                                            <td>${trans.user}</td>
+                                            <td>${trans.paid == ""
+                        ? '<button class="btn btn-dark"><i class="fa fa-search-plus"></i></button>'
+                        : '<button onClick="$(this).viewTransaction(' +
+                        index +
+                        ')" class="btn btn-info"><i class="fa fa-search-plus"></i></button></td>'
+                    } 
+
+                            <td>
+
+                            <button onClick="$(this).deleteTransaction('${trans.order
+                    }')" class="btn btn-danger btn-sm"   ${user.perm_delete == 1 ? "" : "disabled"
+                    }><i class="fa fa-trash"></i></button>
+                            </td>
+                            
+            </tr>
+                                `;
+
+                    if (counter == transactions.length) {
+                    $("#total_profit #counter").text(
+                        curr_symbol + (parseFloat(sales) - parseFloat(costs)).toFixed(2)
+                    );
+                    $("#total_sales #counter").text(
+                        curr_symbol + parseFloat(sales).toFixed(2)
+                    );
+                    $("#total_transactions #counter").text(transact);
+
+                    const result = {};
+
+                    for (const { product_name, price, costPrice, quantity, id } of sold_items) {
+                        if (!result[product_name]) result[product_name] = [];
+                        result[product_name].push({ id, price, costPrice, quantity });
+                    }
+
+                    for (item in result) {
+                        let price = 0;
+                        let quantity = 0;
+                        let id = 0;
+                        let costPrice = 0;
+
+                        result[item].forEach((i) => {
+                        id = i.id;
+                        price = i.price;
+                        costPrice = i.costPrice;
+                        quantity += i.quantity;
+                        });
+
+                        sold.push({
+                        id: id,
+                        product: item,
+                        qty: quantity,
+                        price: price,
+                        costPrice: costPrice,
+                        });
+                    }
+
+                    loadSoldProducts();
+
+                    if (by_user == 0 && by_till == 0) {
+                        userFilter(users);
+                        tillFilter(tills);
+                    }
+
+                    $("#transaction_list").html(transaction_list);
+                    $("#transactionList").DataTable({
+                        order: [[0, "desc"]],
+                        autoWidth: false,
+                        info: true,
+                        JQueryUI: true,
+                        ordering: true,
+                        paging: true,
+                        dom: "Bfrtip",
+                        buttons: ["csv", "excel", "pdf"],
+                    });
+                    }
+                });
+                } else {
+                Swal.fire(
+                    "No data!",
+                    "No transactions available within the selected criteria",
+                    "warning"
+                );
+                }
+            });
+        }
+
+    </script>
 
   </body>
 </html>
