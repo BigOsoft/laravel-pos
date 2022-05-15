@@ -91,8 +91,6 @@ const {
 } = require("../../utils/cartCalculations");
 
 const poscart = new Cart();
-console.log('Transactions loaded');
-loadTransactions();
 
 $(function () {
   function cb(start, end) {
@@ -2936,3 +2934,6 @@ const getselectedCustomer = () => {
   )[0];
   return customer;
 };
+
+console.log('Transactions loaded');
+loadTransactions();
