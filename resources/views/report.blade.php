@@ -14,11 +14,16 @@
     <link href="assets/plugins/dataTables/dataTables.bootstrap.min.css" rel="stylesheet" type="text/css" />    
     <link href="assets/css/pages.css" rel="stylesheet" type="text/css" />
     <link href="assets/css/pagination.css" rel="stylesheet" type="text/css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="assets/js/pos.js"></script>
+    <script src="assets/js/product-filter.js"></script>
     </head>
   <body>
     @php
         echo $posid;
-        var_dump($transactions);
+        $transactions = json_decode($transactions);
+        print_r( $transactions[0]->items );
+
     @endphp
     <div class="main_app">
         <div id="transactions_view">
@@ -134,12 +139,7 @@
     </div>
 
 
-    <script> window.$ = window.jQuery = require('jquery'); </script>
-
-    <script> 
-        require('./assets/js/pos.js');
-        require('./assets/js/product-filter.js');
-     </script>
+    <script> window.jQuery = window.$ = jQuery = $ </script>
 
     <script src="assets/plugins/bootstrap/bootstrap.min.js"></script>
     <script src="assets/plugins/chosen/chosen.jquery.min.js"></script>
