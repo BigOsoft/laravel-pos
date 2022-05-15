@@ -1,15 +1,17 @@
-#transactions_view,
+/* #transactions_view,
 #pointofsale {
   display: none;
-}
+} */
 
 #card-box tr {
   display: block;
 }
+
 #card-box th,
 #card-box td:first-child {
   width: 10px;
 }
+
 #card-box th,
 #card-box td:nth-child(2) {
   width: 150px;
@@ -20,6 +22,7 @@
   height: calc(100vh - 425px);
   overflow: auto;
 }
+
 .products_section {
   display: flex;
   flex-direction: column;
@@ -41,6 +44,7 @@
   width: 100%;
   border-radius: 15px;
 }
+
 #productList-pagination-container {
   background-color: #fff;
   align-items: center;
@@ -137,9 +141,11 @@
   border-radius: 3px;
   border: 1px solid #cccccc;
 }
+
 .chosen-container-single .chosen-single span {
   padding-top: 2px;
 }
+
 .chosen-container-single .chosen-single div b {
   margin-top: 2px;
 }
@@ -180,11 +186,9 @@
 
 #loading {
   background: rgb(221, 221, 221);
-  background: radial-gradient(
-    circle,
-    rgba(153, 153, 153, 1) 0%,
-    rgba(221, 221, 221, 1) 100%
-  );
+  background: radial-gradient(circle,
+      rgba(153, 153, 153, 1) 0%,
+      rgba(221, 221, 221, 1) 100%);
   position: absolute;
   height: 100%;
   width: 100%;

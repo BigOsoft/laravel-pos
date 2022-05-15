@@ -16,7 +16,10 @@
     <link href="assets/css/pagination.css" rel="stylesheet" type="text/css" />
     </head>
   <body>
-    
+    @php
+        echo $posid;
+        var_dump($transactions);
+    @endphp
     <div class="main_app">
         <div id="transactions_view">
         <div class="row">
@@ -131,11 +134,12 @@
     </div>
 
 
-<script> window.$ = window.jQuery = require('jquery'); </script>
+    <script> window.$ = window.jQuery = require('jquery'); </script>
 
-<script> 
-// ADD POS JS HERE
-    </script>
+    <script> 
+        require('./assets/js/pos.js');
+        require('./assets/js/product-filter.js');
+     </script>
 
     <script src="assets/plugins/bootstrap/bootstrap.min.js"></script>
     <script src="assets/plugins/chosen/chosen.jquery.min.js"></script>

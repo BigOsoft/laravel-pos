@@ -25,9 +25,10 @@ Route::match(array('GET', 'POST'), '/dashboard', function() {
     return view('dashboard', ['poss' => $poss]);
 })->middleware(['auth'])->name('dashboard');
 
-Route::match(array('GET', 'POST'), '/report', function() {
-    $transactions = Transactions::all();
-    return view('report', ['transactions' => $transactions]);
+Route::match(array('GET', 'POST'), '/report', function(\Illuminate\Http\Request $request) {
+    $posid = $request->input('posLocation');
+    $transactions = Transactions::where('pos_id', $posid)->get();
+    return view('report', ['transactions' => $transactions, 'posid' => $posid]);
 })->middleware(['auth'])->name('report');
 
 Route::get('/users', function () {
