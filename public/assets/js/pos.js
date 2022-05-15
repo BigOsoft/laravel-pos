@@ -91,6 +91,7 @@ const {
 } = require("../../utils/cartCalculations");
 
 const poscart = new Cart();
+console.log('Transactions loaded');
 loadTransactions();
 
 $(function () {
