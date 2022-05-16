@@ -18,8 +18,8 @@
     </head>
   <body>
     @php
-        echo "<h1 style='text-align: center;'>".$posid."</h1>";
-        echo "<script>let allProducts = ".$products."</script>" ;
+        echo "<h1 style='text-align: center;'>".$pos."</h1>";
+        echo "<script>let allProducts = ".$products."; let allTransactions= ".$transactions."</script>" ;
 
     @endphp
     <div class="main_app">
@@ -166,7 +166,7 @@
         let sold = [];
         let state = [];
         let sold_items = [];
-        let allTransactions = [];
+        // let allTransactions = [];
         let platform;
         let user = {};
         let start = moment().startOf("month");
@@ -178,34 +178,6 @@
         let by_status = 1;
         let curr_symbol = "Rs.";
         let Swal;
-        
-        class TransactionModel {
-          constructor(t) {
-            this._id = String(t._id);
-            this.invoiceNumber = t.InvoiceNumber;
-            this.posID = t.posID;
-            this.order = t.order;
-            this.ref_number = t.order;
-            this.discount = t.discount;
-            this.customer = t.customer;
-            this.status = t.status;
-            this.subtotal = parseInt(t.subtotal);
-            this.tax = t.tax;
-            this.order_type = t.order_type;
-            this.items = t.items;
-            if (!t.date) this.date = new Date();
-            else this.date = new Date(t.date);
-            this.payment_info = t.payment_info;
-            this.payment_type = t.payment_type;
-            this.user = t.user;
-            this.user_id = t.user_id;
-            this.paid = parseInt(t.paid);
-            this.change = parseInt(t.change);
-            this.total = parseInt(t.total);
-            if (t._rev) this._rev = t._rev;
-            this.synced = t.synced ? t.synced : false
-          }
-        }
 
         function loadSoldProducts() {
             sold.sort();
@@ -291,15 +263,15 @@
             let counter = 0;
             let transaction_list = "";
             let query = `by-date?start=${start_date}&end=${end_date}&user=${by_user}&status=${by_status}&till=${by_till}`;
+            let transactions = allTransactions; //run filter query here
 
-            $.get('https://pos.seatqr.co/public/api/transactions', function (transactions) {
-                $("#transaction_list").empty();
-                $("#product_sales").empty();
-                if (transactions.length > 0) {
+            $("#transaction_list").empty();
+            $("#product_sales").empty();
+            if (transactions.length > 0) {
                 $("#transaction_list").empty();
                 $("#transactionList").DataTable().destroy();
-                allTransactions = transactions;
-                console.log(allTransactions);
+                console.log(transactions);
+                
                 _.forEach(transactions, (trans, index) => {
                     sales += parseFloat(trans.total);
                     transact++;
@@ -342,16 +314,14 @@
                         : '<button onClick="$(this).viewTransaction(' +
                         index +
                         ')" class="btn btn-info"><i class="fa fa-search-plus"></i></button></td>'
-                    } 
-                            
-            </tr>
-                                `;
+                    }     
+                    </tr>`;
                     if (counter == transactions.length) {
                     $("#total_profit #counter").text(
-                        curr_symbol + (parseFloat(sales) - parseFloat(costs)).toFixed(2)
+                        curr_symbol + (parseFloat(sales) - parseFloat(costs)).toFixed(0)
                     );
                     $("#total_sales #counter").text(
-                        curr_symbol + parseFloat(sales).toFixed(2)
+                        curr_symbol + parseFloat(sales).toFixed(0)
                     );
                     $("#total_transactions #counter").text(transact);
 
@@ -404,14 +374,13 @@
                     });
                     }
                 });
-                } else {
-                Swal.fire(
-                    "No data!",
-                    "No transactions available within the selected criteria",
-                    "warning"
-                );
-                }
-            });
+            } else {
+            Swal.fire(
+                "No data!",
+                "No transactions available within the selected criteria",
+                "warning"
+            );
+            }
         }
         loadTransactions();
 
