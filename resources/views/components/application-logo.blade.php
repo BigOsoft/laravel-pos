@@ -1,1 +1,1 @@
-<img src="/public/images/bigosoft_favicon.png"/ width="35">
+<img src="/public/images/bigosoft_favicon.png"/ width="60">

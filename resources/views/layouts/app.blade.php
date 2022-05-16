@@ -15,6 +15,8 @@
 
         <!-- Scripts -->
         <script src="{{ asset('js/app.js') }}" defer></script>
+
+        <link rel="icon" href="{{ URL::asset('images/bigosoft_favicon.png') }}" />
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100">
