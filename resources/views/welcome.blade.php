@@ -46,7 +46,7 @@
                     </div>
                 </div>
 
-                <div class="flex justify-center mt-4 sm:items-center sm:justify-between">
+                <div class="flex justify-center mt-4 sm:items-center sm:justify-center">
                     <div class="text-center text-sm text-gray-500 sm:text-left">
                         <div class="flex items-center">
                             <p>Cloud Point Of Sale System powered by <a style="color: #DC4C3A;" href="https://bigosoft.us">Ω</a></p>
