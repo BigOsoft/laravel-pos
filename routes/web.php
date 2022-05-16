@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Models\POS; 
 use App\Models\Transactions;
+use App\Models\Inventory;
 
 
 /*
@@ -28,7 +29,8 @@ Route::match(array('GET', 'POST'), '/dashboard', function() {
 Route::match(array('GET', 'POST'), '/report', function(\Illuminate\Http\Request $request) {
     $posid = $request->input('posLocation');
     $transactions = Transactions::where('pos_id', $posid)->get();
-    return view('report', ['transactions' => $transactions, 'posid' => $posid]);
+    $products = Inventory::where('company', 1)->get();
+    return view('report', ['transactions' => $transactions, 'posid' => $posid, 'products' => $products]);
 })->middleware(['auth'])->name('report');
 
 Route::get('/users', function () {

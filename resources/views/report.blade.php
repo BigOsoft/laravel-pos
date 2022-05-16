@@ -18,9 +18,8 @@
     </head>
   <body>
     @php
-        echo $posid;
-        $transactions = json_decode($transactions);
-        print_r( $transactions[0]->items );
+        echo "<h1 style='text-align: center;'>".$posid."</h1>";
+        echo "<script>let allProducts = ".$products."</script>" ;
 
     @endphp
     <div class="main_app">
@@ -123,8 +122,7 @@
                                         <th>Method</th>
                                         <th>Cashier</th>
                                         <th>View</th>
-                                        <th>View</th>
-                                   
+
                                     </tr>
                                 </thead>
                                 <tbody id="transaction_list"></tbody>
@@ -143,6 +141,7 @@
     <script src="assets/plugins/chosen/chosen.jquery.min.js"></script>
     <script src="assets/plugins/jquery-ui/jquery.form.min.js"></script>
     <script src="assets/plugins/daterangepicker/daterangepicker.min.js"></script>
+    <script src="https://momentjs.com/downloads/moment.js"></script>
     <script src="assets/plugins/dataTables/jquery.dataTables.min.js"></script>
     <script src="assets/plugins/dataTables/jquery.dataTables.bootstrap.js"></script>
     <script src="assets/plugins/dataTables/dataTables.buttons.min.js"></script>
@@ -152,6 +151,7 @@
     <script src="assets/js/pagination.js"></script>
     <script src="assets/js/listeners/index.js"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
     <!-- <script src="assets/plugins/jquery-ui/jquery-ui.min.js"></script>
     <script src="assets/plugins/jq-keyboard/jqkeyboard-min.js"></script>
     <script src="assets/plugins/jq-keyboard/jqk.layout.en.js"></script>
@@ -160,7 +160,7 @@
     
     <script>
         let allUsers = [];
-        let allProducts = [];
+        // let allProducts = [];
         let allCategories = [];
         let allVendors = [];
         let sold = [];
@@ -176,11 +176,39 @@
         let by_till = 0;
         let by_user = 0;
         let by_status = 1;
-        let curr_symbol = "Rs. ";
+        let curr_symbol = "Rs.";
         let Swal;
+        
+        class TransactionModel {
+          constructor(t) {
+            this._id = String(t._id);
+            this.invoiceNumber = t.InvoiceNumber;
+            this.posID = t.posID;
+            this.order = t.order;
+            this.ref_number = t.order;
+            this.discount = t.discount;
+            this.customer = t.customer;
+            this.status = t.status;
+            this.subtotal = parseInt(t.subtotal);
+            this.tax = t.tax;
+            this.order_type = t.order_type;
+            this.items = t.items;
+            if (!t.date) this.date = new Date();
+            else this.date = new Date(t.date);
+            this.payment_info = t.payment_info;
+            this.payment_type = t.payment_type;
+            this.user = t.user;
+            this.user_id = t.user_id;
+            this.paid = parseInt(t.paid);
+            this.change = parseInt(t.change);
+            this.total = parseInt(t.total);
+            if (t._rev) this._rev = t._rev;
+            this.synced = t.synced ? t.synced : false
+          }
+        }
 
         function loadSoldProducts() {
-            sold.sort(discend);
+            sold.sort();
 
             let counter = 0;
             let sold_list = "";
@@ -193,25 +221,18 @@
                 products++;
 
                 let product = allProducts.filter(function (selected) {
-                return selected._id == item.id;
+                    return selected.id == item.id;
                 });
-                // console.log(item);
                 // console.log(product[0] == undefined ? "undefined" : "defined");
                 counter++;
-                if (product[0] != undefined) {
                 sold_list += `<tr>
                             <td>${item.product}</td>
                             <td>${item.qty}</td>
-                            <td>${product[0].stock == 1
-                    ? product.length > 0
-                        ? product[0].quantity
-                        : ""
-                    : "N/A"
+                            <td>${product[0] != undefined ? product[0].stock == 1 ? product.length > 0 ? product[0].quantity : "" : "N/A" : "N/A"
                     }</td>
-                            <td>${settings.symbol + (item.qty * parseFloat(item.price)).toFixed(2)}</td>
-                    <td>${settings.symbol + (item.qty * (parseFloat(item.price) - parseFloat(item.costPrice))).toFixed(2)}</td>
+                            <td>${curr_symbol + (item.qty * parseFloat(item.price)).toFixed(2)}</td>
+                    <td>${curr_symbol + (item.qty * (parseFloat(item.price) - parseFloat(item.costPrice))).toFixed(2)}</td>
                             </tr>`;
-                }
 
                 if (counter == sold.length) {
                 $("#total_items #counter").text(items);
@@ -232,6 +253,28 @@
                 }
             });
         }
+        
+        function userFilter(users) {
+              $("#users").empty();
+              $("#users").append(`<option value="0">All</option>`);
+            
+              users.forEach((user) => {
+                let u = allUsers.filter(function (usr) {
+                  return usr._id == user;
+                });
+                $("#users").append(
+                  `<option value="${user}">${user}</option>`
+                );
+              });
+        }
+        
+        function tillFilter(tills) {
+          $("#tills").empty();
+          $("#tills").append(`<option value="0">All</option>`);
+          // tills.forEach((till) => {
+          // 	$("#tills").append(`<option value="${till}">${till}</option>`);
+          // });
+        }
 
 
         function loadTransactions() {
@@ -249,29 +292,27 @@
             let transaction_list = "";
             let query = `by-date?start=${start_date}&end=${end_date}&user=${by_user}&status=${by_status}&till=${by_till}`;
 
-            $.get('https://pos.seatqr.co/public/api/transactions' + query, function (transactions) {
+            $.get('https://pos.seatqr.co/public/api/transactions', function (transactions) {
                 $("#transaction_list").empty();
                 $("#product_sales").empty();
                 if (transactions.length > 0) {
                 $("#transaction_list").empty();
                 $("#transactionList").DataTable().destroy();
                 allTransactions = transactions;
-
+                console.log(allTransactions);
                 _.forEach(transactions, (trans, index) => {
-                    const tempTrans = new TransactionModel(trans);
-
                     sales += parseFloat(trans.total);
                     transact++;
-                    _.forEach(tempTrans.items, (item) => { sold_items.push(item); costs += (parseFloat(item.costPrice) * parseFloat(item.quantity)); });
+                    _.forEach(JSON.parse(trans.items.slice(1,-1)), (item) => { sold_items.push(item); costs += (parseFloat(item.costPrice) * parseFloat(item.quantity)); });
 
                     // if (!tills.includes(trans.till)) {
                     // 	tills.push(trans.till);
                     // }
 
                     if (!users.includes(trans.user_id)) {
-                    users.push(trans.user_id);
+                        users.push(trans.user_id);
                     }
-                    // console.log(user.perm_users)
+
                     counter++;
                     transaction_list += `<tr>
                                             <td>${trans.order}</td>
@@ -302,17 +343,9 @@
                         index +
                         ')" class="btn btn-info"><i class="fa fa-search-plus"></i></button></td>'
                     } 
-
-                            <td>
-
-                            <button onClick="$(this).deleteTransaction('${trans.order
-                    }')" class="btn btn-danger btn-sm"   ${user.perm_delete == 1 ? "" : "disabled"
-                    }><i class="fa fa-trash"></i></button>
-                            </td>
                             
             </tr>
                                 `;
-
                     if (counter == transactions.length) {
                     $("#total_profit #counter").text(
                         curr_symbol + (parseFloat(sales) - parseFloat(costs)).toFixed(2)
@@ -380,6 +413,7 @@
                 }
             });
         }
+        loadTransactions();
 
     </script>
 
